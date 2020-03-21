@@ -20,11 +20,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 
+
 /**
  * Class EmailController
  * @package App\Controller
  *
- * @Route("/api", name="api")
+ * @Route("/api", name="api__")
  */
 class EmailController extends AbstractController
 {
@@ -42,6 +43,9 @@ class EmailController extends AbstractController
     {
         $manager = $this->getDoctrine()->getManager();
         $html = $this->renderView('mail/formToDriver.html.twig');
-        return $html;
+        $emailConnector = new \App\Connector\EmailConnector;
+        $emailConnector->prepare($mailer, $html, 'a.suennemann@edv-peuker.de');
+        $emailConnector->push();
+        return array('success' => 'true');
     }
 }
