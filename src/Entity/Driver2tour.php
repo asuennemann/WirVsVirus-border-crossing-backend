@@ -52,5 +52,46 @@ class Driver2tour
      */
     private $pkeyCarregistration;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getPkeyDriver(): ?Driver
+    {
+        return $this->pkeyDriver;
+    }
+
+    public function setPkeyDriver(?Driver $pkeyDriver): self
+    {
+        $this->pkeyDriver = $pkeyDriver;
+
+        return $this;
+    }
+
+    public function getPkeyTour(): ?Tour
+    {
+        return $this->pkeyTour;
+    }
+
+    public function setPkeyTour(?Tour $pkeyTour): self
+    {
+        $this->pkeyTour = $pkeyTour;
+
+        return $this;
+    }
+
+    public function getPkeyCarregistration(): ?Carregistration
+    {
+        return $this->pkeyCarregistration;
+    }
+
+    public function setPkeyCarregistration(?Carregistration $pkeyCarregistration): self
+    {
+        $this->pkeyCarregistration = $pkeyCarregistration;
+
+        return $this;
+    }
+
 
 }

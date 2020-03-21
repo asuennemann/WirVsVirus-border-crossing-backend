@@ -49,5 +49,46 @@ class FormfieldValue
      */
     private $pkeyFormtemplatefield;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
+
+    public function setValue(string $value): self
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
+    public function getPkeyTour(): ?Tour
+    {
+        return $this->pkeyTour;
+    }
+
+    public function setPkeyTour(?Tour $pkeyTour): self
+    {
+        $this->pkeyTour = $pkeyTour;
+
+        return $this;
+    }
+
+    public function getPkeyFormtemplatefield(): ?Formtemplatefield
+    {
+        return $this->pkeyFormtemplatefield;
+    }
+
+    public function setPkeyFormtemplatefield(?Formtemplatefield $pkeyFormtemplatefield): self
+    {
+        $this->pkeyFormtemplatefield = $pkeyFormtemplatefield;
+
+        return $this;
+    }
+
 
 }

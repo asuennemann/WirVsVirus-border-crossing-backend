@@ -29,5 +29,22 @@ class Country
      */
     private $countryname;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getCountryname(): ?string
+    {
+        return $this->countryname;
+    }
+
+    public function setCountryname(string $countryname): self
+    {
+        $this->countryname = $countryname;
+
+        return $this;
+    }
+
 
 }

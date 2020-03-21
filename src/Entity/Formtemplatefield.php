@@ -56,5 +56,58 @@ class Formtemplatefield
      */
     private $pkeyFormtemplate;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getDatatype(): ?string
+    {
+        return $this->datatype;
+    }
+
+    public function setDatatype(string $datatype): self
+    {
+        $this->datatype = $datatype;
+
+        return $this;
+    }
+
+    public function getPos(): ?int
+    {
+        return $this->pos;
+    }
+
+    public function setPos(?int $pos): self
+    {
+        $this->pos = $pos;
+
+        return $this;
+    }
+
+    public function getName(): ?Country
+    {
+        return $this->name;
+    }
+
+    public function setName(?Country $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getPkeyFormtemplate(): ?Formtemplate
+    {
+        return $this->pkeyFormtemplate;
+    }
+
+    public function setPkeyFormtemplate(?Formtemplate $pkeyFormtemplate): self
+    {
+        $this->pkeyFormtemplate = $pkeyFormtemplate;
+
+        return $this;
+    }
+
 
 }

@@ -42,5 +42,34 @@ class Border
      */
     private $rideto;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getRidefrom(): ?Country
+    {
+        return $this->ridefrom;
+    }
+
+    public function setRidefrom(?Country $ridefrom): self
+    {
+        $this->ridefrom = $ridefrom;
+
+        return $this;
+    }
+
+    public function getRideto(): ?Country
+    {
+        return $this->rideto;
+    }
+
+    public function setRideto(?Country $rideto): self
+    {
+        $this->rideto = $rideto;
+
+        return $this;
+    }
+
 
 }

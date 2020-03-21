@@ -42,5 +42,34 @@ class Formtemplate
      */
     private $pkeyBorder;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getName(): ?Country
+    {
+        return $this->name;
+    }
+
+    public function setName(?Country $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getPkeyBorder(): ?Border
+    {
+        return $this->pkeyBorder;
+    }
+
+    public function setPkeyBorder(?Border $pkeyBorder): self
+    {
+        $this->pkeyBorder = $pkeyBorder;
+
+        return $this;
+    }
+
 
 }

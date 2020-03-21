@@ -42,5 +42,34 @@ class Tour2border
      */
     private $pkeyBorder;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getPkeyTour(): ?Tour
+    {
+        return $this->pkeyTour;
+    }
+
+    public function setPkeyTour(?Tour $pkeyTour): self
+    {
+        $this->pkeyTour = $pkeyTour;
+
+        return $this;
+    }
+
+    public function getPkeyBorder(): ?Border
+    {
+        return $this->pkeyBorder;
+    }
+
+    public function setPkeyBorder(?Border $pkeyBorder): self
+    {
+        $this->pkeyBorder = $pkeyBorder;
+
+        return $this;
+    }
+
 
 }

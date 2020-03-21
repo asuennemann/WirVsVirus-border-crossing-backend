@@ -56,5 +56,58 @@ class Healthcheck
      */
     private $pkeyGuard;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getDue(): ?\DateTimeInterface
+    {
+        return $this->due;
+    }
+
+    public function setDue(\DateTimeInterface $due): self
+    {
+        $this->due = $due;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getPkeyDriver(): ?Driver
+    {
+        return $this->pkeyDriver;
+    }
+
+    public function setPkeyDriver(?Driver $pkeyDriver): self
+    {
+        $this->pkeyDriver = $pkeyDriver;
+
+        return $this;
+    }
+
+    public function getPkeyGuard(): ?Guard
+    {
+        return $this->pkeyGuard;
+    }
+
+    public function setPkeyGuard(?Guard $pkeyGuard): self
+    {
+        $this->pkeyGuard = $pkeyGuard;
+
+        return $this;
+    }
+
 
 }

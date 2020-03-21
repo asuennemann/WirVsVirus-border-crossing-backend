@@ -39,5 +39,34 @@ class Carregistration
      */
     private $pkeyCompany;
 
+    public function getPkey(): ?string
+    {
+        return $this->pkey;
+    }
+
+    public function getCarregistration(): ?string
+    {
+        return $this->carregistration;
+    }
+
+    public function setCarregistration(?string $carregistration): self
+    {
+        $this->carregistration = $carregistration;
+
+        return $this;
+    }
+
+    public function getPkeyCompany(): ?Company
+    {
+        return $this->pkeyCompany;
+    }
+
+    public function setPkeyCompany(?Company $pkeyCompany): self
+    {
+        $this->pkeyCompany = $pkeyCompany;
+
+        return $this;
+    }
+
 
 }
