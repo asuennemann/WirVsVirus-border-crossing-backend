@@ -23,6 +23,20 @@ class Tour2border
     private $pkey = 'uuid_generate_v4()';
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="approvedbyguard", type="guid", nullable=true)
+     */
+    private $approvedbyguard;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="approvedon", type="date", nullable=true)
+     */
+    private $approvedon;
+
+    /**
      * @var \Tour
      *
      * @ORM\ManyToOne(targetEntity="Tour")
@@ -45,6 +59,30 @@ class Tour2border
     public function getPkey(): ?string
     {
         return $this->pkey;
+    }
+
+    public function getApprovedbyguard(): ?string
+    {
+        return $this->approvedbyguard;
+    }
+
+    public function setApprovedbyguard(?string $approvedbyguard): self
+    {
+        $this->approvedbyguard = $approvedbyguard;
+
+        return $this;
+    }
+
+    public function getApprovedon(): ?\DateTimeInterface
+    {
+        return $this->approvedon;
+    }
+
+    public function setApprovedon(?\DateTimeInterface $approvedon): self
+    {
+        $this->approvedon = $approvedon;
+
+        return $this;
     }
 
     public function getPkeyTour(): ?Tour
