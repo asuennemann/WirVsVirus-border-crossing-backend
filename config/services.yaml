@@ -4,7 +4,14 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    aws_sdk.config.default:
+        version: 'latest'
+        region: 'eu-west-1'
 
+    aws_sdk.credentials.default:
+        credentials:
+            key: 'AKIAVSI6OX7Z3CO2BEP5'
+            secret: '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'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -26,3 +33,9 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    Aws\Sdk: ~
+
+    App\Util\AwsSnsUtil:
+        arguments:
+            $config: '%aws_sdk.config.default%'
+            $credentials: '%aws_sdk.credentials.default%'
