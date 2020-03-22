@@ -53,7 +53,7 @@ parameters:
   description: 'Requested CPU usage of the backend.'
   value: '30m'
   required: true
-- name: 'DB_HOST'
+- name: 'DB_SERVICE'
   displayName: 'Database Host'
   description: 'Hostname of the server running the database.'
   required: true
@@ -240,7 +240,7 @@ objects:
       template: bordercrossing-backend
   spec:
     type: ExternalName
-    externalName: "${DB_HOST}"
+    externalName: "${DB_SERVICE}"
 
 - kind: Service
   apiVersion: v1
@@ -345,7 +345,7 @@ objects:
                 value: '${BACKEND_URL}'
               - name: 'REDIS_SERVICE'
                 value: 'redis'
-              - name: 'DB_HOST'
+              - name: 'DB_SERVICE'
                 valueFrom:
                   secretKeyRef:
                     name: 'bordercrossing-db-config'
