@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\Healthcheck" table="healthcheck">
+    <indexes>
+      <index name="IDX_7C2E0BB76C7016EC" columns="pkey_driver"/>
+      <index name="IDX_7C2E0BB7BEE69743" columns="pkey_guard"/>
+    </indexes>
+    <id name="pkey" type="guid" column="pkey">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="healthcheck_pkey_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="due" type="datetime" column="due" nullable="false"/>
+    <field name="status" type="string" column="status" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <many-to-one field="pkeyDriver" target-entity="Driver" fetch="LAZY">
+      <join-columns>
+        <join-column name="pkey_driver" referenced-column-name="pkey"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="pkeyGuard" target-entity="Guard" fetch="LAZY">
+      <join-columns>
+        <join-column name="pkey_guard" referenced-column-name="pkey"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

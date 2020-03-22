@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\Driver2tour" table="driver2tour">
+    <indexes>
+      <index name="IDX_ECD9AC006C7016EC" columns="pkey_driver"/>
+      <index name="IDX_ECD9AC009F5E2AB2" columns="pkey_tour"/>
+      <index name="IDX_ECD9AC00C0A86420" columns="pkey_carregistration"/>
+    </indexes>
+    <id name="pkey" type="guid" column="pkey">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="driver2tour_pkey_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <many-to-one field="pkeyDriver" target-entity="Driver" fetch="LAZY">
+      <join-columns>
+        <join-column name="pkey_driver" referenced-column-name="pkey"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="pkeyTour" target-entity="Tour" fetch="LAZY">
+      <join-columns>
+        <join-column name="pkey_tour" referenced-column-name="pkey"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="pkeyCarregistration" target-entity="Carregistration" fetch="LAZY">
+      <join-columns>
+        <join-column name="pkey_carregistration" referenced-column-name="pkey"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>
