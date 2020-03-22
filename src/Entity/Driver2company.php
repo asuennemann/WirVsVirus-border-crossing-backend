@@ -41,6 +41,7 @@ class Driver2company
      */
     private $company;
 
+
     public function getPkey(): ?string
     {
         return $this->pkey;
@@ -69,6 +70,5 @@ class Driver2company
 
         return $this;
     }
-
 
 }

@@ -31,15 +31,6 @@ class Driver2tour
      */
     private $pkeyDriver;
 
-    /**
-     * @var \Tour
-     *
-     * @ORM\ManyToOne(targetEntity="Tour")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="pkey_tour", referencedColumnName="pkey")
-     * })
-     */
-    private $pkeyTour;
 
     /**
      * @var \Carregistration
@@ -50,6 +41,14 @@ class Driver2tour
      * })
      */
     private $pkeyCarregistration;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Tour", inversedBy="driver2tour")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pkey_tour", referencedColumnName="pkey")
+     * })
+     */
+    private $pkeyTour;
 
     public function getPkey(): ?string
     {
@@ -68,18 +67,6 @@ class Driver2tour
         return $this;
     }
 
-    public function getPkeyTour(): ?Tour
-    {
-        return $this->pkeyTour;
-    }
-
-    public function setPkeyTour(?Tour $pkeyTour): self
-    {
-        $this->pkeyTour = $pkeyTour;
-
-        return $this;
-    }
-
     public function getPkeyCarregistration(): ?Carregistration
     {
         return $this->pkeyCarregistration;
@@ -88,6 +75,18 @@ class Driver2tour
     public function setPkeyCarregistration(?Carregistration $pkeyCarregistration): self
     {
         $this->pkeyCarregistration = $pkeyCarregistration;
+
+        return $this;
+    }
+
+    public function getPkeyTour(): ?Tour
+    {
+        return $this->pkeyTour;
+    }
+
+    public function setPkeyTour(?Tour $pkeyTour): self
+    {
+        $this->pkeyTour = $pkeyTour;
 
         return $this;
     }
