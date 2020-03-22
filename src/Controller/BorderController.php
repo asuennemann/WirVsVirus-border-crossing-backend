@@ -35,7 +35,12 @@ class BorderController extends FOSRestController
     {
         $success = true;
         $manager = $this->getDoctrine()->getManager();
-        $data = json_decode($request->getContent(), true);
+        $dataWrapper = json_decode($request->getContent(), true);
+        $data = json_decode($dataWrapper['body'], true);
+        //$data = json_decode($request->getContent(), true);
+        $FIHA = fopen(__DIR__ . '/data.json', 'w+');
+        fwrite($FIHA, print_r($data, true));
+        //fclose($FIHA);
         $companyFromDb = null;
         $driverFromDb = null;
         $company = new Company();
@@ -60,6 +65,8 @@ class BorderController extends FOSRestController
                 $manager->flush();
             }
         }
+        fwrite($FIHA, 'company');
+
 
         $driver = new Driver();
         $form = $this->createForm(\App\Form\DriverType::class, $driver);
@@ -84,14 +91,15 @@ class BorderController extends FOSRestController
             $success = false;
             return $this->handleView($this->view(['success'=>$success, 'errors' => $form->getErrors()]));
         }
+        fwrite($FIHA, 'driver');
 
 
         $driverToCompany = new Driver2company();
         $driverToCompanyRepository = $manager->getRepository('App:Driver2company');
         $driverToCompanyFromDb = $driverToCompanyRepository->findOneBy([
-                'driver' => $driver->getPkey(),
-                'company' => $company->getPkey()
-            ]);
+            'driver' => $driver->getPkey(),
+            'company' => $company->getPkey()
+        ]);
         if(!$driverToCompanyFromDb)
         {
             $driverToCompany->setCompany($company);
@@ -99,6 +107,7 @@ class BorderController extends FOSRestController
             $manager->persist($driverToCompany);
             $manager->flush();
         }
+        fwrite($FIHA, 'driverToCompany');
 
         $tour = new Tour();
         $nBorders = count($data[0]['Tour']);
@@ -108,11 +117,24 @@ class BorderController extends FOSRestController
         $tour->setEndDate($endDate);
         $manager->persist($tour);
         $manager->flush();
+        fwrite($FIHA, 'tour');
 
         $borderRepository = $manager->getRepository('App:Border');
+        $countryRepository = $manager->getRepository('App:Country');
         for($i = 0; $i < $nBorders; $i++)
         {
             $border = $borderRepository->findOneBy(['ridefrom' => $data[0]['Tour'][$i]['ridefrom'], 'rideto' => $data[0]['Tour'][$i]['rideto']]);
+            // if border don't exist -> add one
+            if(!$border)
+            {
+                $border = new Border();
+                $rideFrom = $countryRepository->find($data[0]['Tour'][$i]['ridefrom']);
+                $rideTo = $countryRepository->find($data[0]['Tour'][$i]['rideto']);
+                $border->setRidefrom($rideFrom);
+                $border->setRideto($rideTo);
+                $manager->persist($border);
+                $manager-flush();
+            }
             $tour2border = new Tour2border();
             $tour2border->setPkeyBorder($border);
             $tour2border->setPkeyTour($tour);
@@ -124,13 +146,15 @@ class BorderController extends FOSRestController
 
         $carregistration = new Carregistration();
         $form = $this->createForm(\App\Form\CarregistrationType::class, $carregistration);
-        $form->submit($data[0]['Carregistration']);
+        //$form->submit($data[0]['Carregistration']);
+        $form->submit($data[0]['Car']);
         if($form->isSubmitted() && $form->isValid())
         {
             $carregistration->setPkeyCompany($company);
             $manager->persist($carregistration);
             $manager->flush();
         }
+        fwrite($FIHA, 'carregistration');
 
 
         $driverToTour = new Driver2tour();
@@ -139,7 +163,8 @@ class BorderController extends FOSRestController
         $driverToTour->setPkeyCarregistration($carregistration);
         $manager->persist($driverToTour);
         $manager->flush();
-
+        fwrite($FIHA, 'driverToTour');
+        fclose($FIHA);
         return $this->handleView($this->view(['success'=>$success, 'tour' => $tour->getPkey()]));
     }
 }
