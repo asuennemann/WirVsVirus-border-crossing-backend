@@ -6,7 +6,7 @@
 parameters:
     aws_sdk.config.default:
         version: 'latest'
-        region: '%ENV(resolve:AWS_REGION)%'
+        region: '%env(resolve:AWS_REGION)%'
 
     aws_sdk.credentials.default:
         credentials:
