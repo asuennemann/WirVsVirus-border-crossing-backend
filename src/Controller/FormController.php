@@ -63,7 +63,7 @@ class FormController extends FOSRestController
     );
 
     /**
-     * @Rest\Get("/form/field/list")
+     * @Rest\Post("/form/field/list")
      * @return Response
      */
     public function CrossAddAction(Request $request)
