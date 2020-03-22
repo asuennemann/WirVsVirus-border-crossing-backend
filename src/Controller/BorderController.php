@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Carregistration;
 use App\Entity\Company;
 use App\Entity\Driver;
 use App\Entity\Driver2company;
+use App\Entity\Driver2tour;
 use App\Entity\Tour;
 use App\Entity\Tour2border;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +36,31 @@ class BorderController extends FOSRestController
         $success = true;
         $manager = $this->getDoctrine()->getManager();
         $data = json_decode($request->getContent(), true);
+        $companyFromDb = null;
+        $driverFromDb = null;
+        $company = new Company();
+        $form = $this->createForm(\App\Form\CompanyType::class, $company);
+        $form->submit($data[0]['Company']);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $companyRepository = $manager->getRepository('App:Company');
+            $companyFromDb = $companyRepository->findOneBy([
+                'companyname' => $company->getCompanyname(),
+                'street' => $company->getStreet(),
+                'place' => $company->getPlace(),
+                'country' => $company->getCountry()
+            ]);
+            if($companyFromDb)
+            {
+                $company = $companyFromDb;
+            }
+            else
+            {
+                $manager->persist($company);
+                $manager->flush();
+            }
+        }
+
         $driver = new Driver();
         $form = $this->createForm(\App\Form\DriverType::class, $driver);
         $form->submit($data[0]['Driver']);
@@ -59,46 +86,18 @@ class BorderController extends FOSRestController
         }
 
 
-        $company = new Company();
-        $form = $this->createForm(\App\Form\CompanyType::class, $company);
-        $form->submit($data[0]['Company']);
-        if($form->isSubmitted() && $form->isValid())
-        {
-            $companyRepository = $manager->getRepository('App:Company');
-            $companyFromDb = $companyRepository->findOneBy([
-                'companyname' => $company->getCompanyname(),
-                'street' => $company->getStreet(),
-                'place' => $company->getPlace(),
-                'country' => $company->getCountry()
-            ]);
-            if($companyFromDb)
-            {
-                $company = $companyFromDb;
-            }
-            else
-            {
-                $manager->persist($company);
-                $manager->flush();
-            }
-
-
-            $driverToCompany = new Driver2company();
-            $driverToCompany->setDriver($driver);
-            $driverToCompany->setCompany($company);
-            $driverToCompanyRepository = $manager->getRepository('App:Driver2company');
-            $driverToCompanyFromDb = $driverToCompanyRepository->findOneBy([
+        $driverToCompany = new Driver2company();
+        $driverToCompanyRepository = $manager->getRepository('App:Driver2company');
+        $driverToCompanyFromDb = $driverToCompanyRepository->findOneBy([
                 'driver' => $driver->getPkey(),
                 'company' => $company->getPkey()
             ]);
-            if($driverToCompanyFromDb)
-            {
-                $driverToCompany = $driverToCompanyFromDb;
-            }
-            else
-            {
-                $manager->persist($driverToCompany);
-                $manager->flush();
-            }
+        if(!$driverToCompanyFromDb)
+        {
+            $driverToCompany->setCompany($company);
+            $driverToCompany->setDriver($driver);
+            $manager->persist($driverToCompany);
+            $manager->flush();
         }
 
         $tour = new Tour();
@@ -111,8 +110,6 @@ class BorderController extends FOSRestController
         $manager->flush();
 
         $borderRepository = $manager->getRepository('App:Border');
-        $countryRepository = $manager->getRepository('App:Country');
-        $border = new Border();
         for($i = 0; $i < $nBorders; $i++)
         {
             $border = $borderRepository->findOneBy(['ridefrom' => $data[0]['Tour'][$i]['ridefrom'], 'rideto' => $data[0]['Tour'][$i]['rideto']]);
@@ -124,6 +121,24 @@ class BorderController extends FOSRestController
             $manager->persist($tour2border);
             $manager->flush();
         }
+
+        $carregistration = new Carregistration();
+        $form = $this->createForm(\App\Form\CarregistrationType::class, $carregistration);
+        $form->submit($data[0]['Carregistration']);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $carregistration->setPkeyCompany($company);
+            $manager->persist($carregistration);
+            $manager->flush();
+        }
+
+
+        $driverToTour = new Driver2tour();
+        $driverToTour->setPkeyTour($tour);
+        $driverToTour->setPkeyDriver($driver);
+        $driverToTour->setPkeyCarregistration($carregistration);
+        $manager->persist($driverToTour);
+        $manager->flush();
 
         return $this->handleView($this->view(['success'=>$success, 'tour' => $tour->getPkey()]));
     }
