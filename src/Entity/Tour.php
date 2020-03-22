@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,11 +38,19 @@ class Tour
     private $endDate;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="pkey_formdata", type="guid", nullable=false)
+     * @ORM\OneToMany(targetEntity="App\Entity\Tour2border", mappedBy="pkeyTour")
      */
-    private $pkeyFormdata;
+    private $tour2border;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Driver2tour", mappedBy="pkeyTour")
+     */
+    private $driver2tour;
+
+    public function __construct()
+    {
+        $this->tour2border = new ArrayCollection();
+    }
 
     public function getPkey(): ?string
     {
@@ -71,17 +81,53 @@ class Tour
         return $this;
     }
 
-    public function getPkeyFormdata(): ?string
+    /**
+     * @return Collection|Tour2border[]
+     */
+    public function getTour2border(): Collection
     {
-        return $this->pkeyFormdata;
+        return $this->tour2border;
     }
 
-    public function setPkeyFormdata(string $pkeyFormdata): self
+    public function addTour2border(Tour2border $tour2border): self
     {
-        $this->pkeyFormdata = $pkeyFormdata;
+        if (!$this->tour2border->contains($tour2border)) {
+            $this->tour2border[] = $tour2border;
+            $tour2border->setPkeyTour($this);
+        }
 
         return $this;
     }
 
+    public function removeTour2border(Tour2border $tour2border): self
+    {
+        if ($this->tour2border->contains($tour2border)) {
+            $this->tour2border->removeElement($tour2border);
+            // set the owning side to null (unless already changed)
+            if ($tour2border->getPkeyTour() === $this) {
+                $tour2border->setPkeyTour(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDriver2tour(): ?Driver2tour
+    {
+        return $this->driver2tour;
+    }
+
+    public function setDriver2tour(?Driver2tour $driver2tour): self
+    {
+        $this->driver2tour = $driver2tour;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newPkeyTour = null === $driver2tour ? null : $this;
+        if ($driver2tour->getPkeyTour() !== $newPkeyTour) {
+            $driver2tour->setPkeyTour($newPkeyTour);
+        }
+
+        return $this;
+    }
 
 }

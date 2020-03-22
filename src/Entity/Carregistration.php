@@ -67,5 +67,4 @@ class Carregistration
         return $this;
     }
 
-
 }
