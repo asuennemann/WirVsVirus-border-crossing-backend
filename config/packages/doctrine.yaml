@@ -1,6 +1,6 @@
 doctrine:
     dbal:
-        url: '%env(resolve:DATABASE_URL)%'
+        url: 'postgresql://%env(resolve:DB_USER)%:%env(resolve:DB_PASSWORD)@%env(resolve:DB_SERVICE)%:5432/%env(resolve:DB_NAME)%?%env(resolve:DB_PARAMETERS)%'
         driver: 'pdo_pgsql'
         charset: utf8
 

@@ -1,0 +1,387 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: bordercrossing-backend
+  labels:
+    template: bordercrossing-backend
+  annotations:
+    description: >-
+      The BorderCrossing backend for the #WirVsVirus Hackaton
+    iconClass: icon-apache
+    openshift.io/display-name: BorderCrossing Backend
+    openshift.io/documentation-url: 'https://github.com/michaelsiebers/WirVsVirus-border-crossing-backend'
+    openshift.io/long-description: >-
+      This is the backend for the BorderCrossing API.
+    openshift.io/provider-display-name: '#WirVsVirus Bundeshackaton 2020-03-20'
+    openshift.io/support-url: 'https://github.com/michaelsiebers/WirVsVirus-border-crossing-backend'
+    tags: 'httpd,php,wirvsvirus,hackaton'
+    template.openshift.io/bindable: 'true'
+parameters:
+- name: 'BACKEND_HOSTNAME'
+  displayName: 'Backend Hostname'
+  value: 'fastbordercrossing.org'
+  required: true
+- name: 'BACKEND_URL'
+  displayName: 'Backend URL (without http:// or https://)'
+  value: 'api.fastbordercrossing.org'
+  required: true
+- name: 'APP_ENV'
+  displayName: 'Environment'
+  value: 'prod'
+  required: true
+- name: 'APP_DEBUG'
+  dipslayName: 'Debug Level'
+  value: '0'
+  required: true
+- name: 'BACKEND_MEMORY_LIMIT'
+  displayName: 'Maximum Memory Limit'
+  description: 'Maximum memory usage of the backend. Backend gets killed if this limit is crossed.'
+  value: "1280Mi"
+  required: true
+- name: 'BACKEND_MEMORY_REQUESTS'
+  displayName: 'Average Memory Usage'
+  description: 'Requested memory usage of the backend.'
+  value: "640Mi"
+  required: true
+- name: 'BACKEND_CPU_LIMIT'
+  displayName: 'Maximum CPU Limit'
+  description: 'Maximum CPU usage. The backend will be throttled if this limit is crossed.'
+  value: '2'
+  required: true
+- name: 'BACKEND_CPU_REQUESTS'
+  displayName: 'Average CPU Usage'
+  description: 'Requested CPU usage of the backend.'
+  value: '30m'
+  required: true
+- name: 'DB_HOST'
+  displayName: 'Database Host'
+  description: 'Hostname of the server running the database.'
+  required: true
+- name: 'DB_NAME'
+  displayName: 'Database Name'
+  description: 'The name of the database'
+  required: true
+- name: 'DB_USER'
+  displayName: 'Database User'
+  required: true
+- name: 'DB_PASSWORD'
+  displayName: 'Database Password'
+  required: true
+- name: 'DB_PARAMETERS'
+  displayName: 'Database Parameters'
+  value: "serverVersion=11&charset=utf8"
+  required: false
+- name: 'AWS_REGION'
+  displayName: 'AWS Region'
+  value: 'eu-central-1'
+  required: true
+- name: 'AWS_SECRET'
+  displayName: 'AWS Secret'
+  required: true
+- name: 'AWS_SECRET_KEY'
+  displayName: 'AWS Secret Key'
+  required: true
+- name: 'PHP_BASE_IMAGE_VERSION'
+  displayName: 'PHP Version to use'
+  value: 'latest'
+  required: true
+- name: 'IMAGE_TARGET_TAG'
+  displayName: 'Target tag of the image built'
+  description: 'The tag for the image that is produced.'
+  value: 'latest'
+  required: true
+- name: 'REPOSITORY'
+  displayName: 'Git Repository'
+  description: 'Git repository containing the source'
+  value: 'https://github.com/michaelsiebers/WirVsVirus-border-crossing-backend.git'
+  required: true
+- name: 'REPOSITORY_CONTEXTDIR'
+  displayName: 'Context Directory'
+  description: 'Directory within repository.'
+  value: '/'
+  required: true
+- name: 'REPOSITORY_TAG'
+  displayName: 'Git Tag'
+  description: 'Tag inside the git repo to use.'
+  value: 'master'
+  required: true
+- name: 'GITHUB_PATH_SECRET'
+  displayName: 'Path randomizer'
+  description: 'This is used to randomize the path for the github webhook (so it can not be guessed).'
+  generate: expression
+  from: "[0-9a-f]{12}"
+objects:
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: bordercrossing-backend
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+  spec:
+    lookupPolicy:
+      local: true
+- kind: BuildConfig
+  apiVersion: build.openshift.io/v1
+  metadata:
+    annotations:
+      description: Builds the bordercrossing backend
+      template.alpha.openshift.io/wait-for-ready: 'true'
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+    name: bordercrossing-backend
+  spec:
+    resources:
+      limits:
+        cpu: "250m"
+        memory: "128Mi"
+    completionDeadlineSeconds: 120
+    successfulBuildsHistoryLimit: 2
+    failedBuildsHistoryLimit: 5
+    output:
+      to:
+        kind: ImageStreamTag
+        name: 'bordercrossing-backend:${IMAGE_TARGET_TAG}'
+      imageLabels:
+      - name: 'io.k8s.display-name'
+        value: 'BorderCrossing Backend Builder'
+      - name: 'io.k8s.description'
+        value: 'BorderCrossing Backend Builder (based on Apache 2.4 and PHP 7.3 in Red Hat version ${PHP_BASE_IMAGE_VERSION}'
+      - name: 'io.openshift.s2i.scripts-url'
+        value: 'image:///usr/libexec/s2i'
+      - name: 'io.s2i.scripts-url'
+        value: 'image:///usr/libexec/s2i'
+      - name: 'io.openshift.tags'
+        value: 'builder,php'
+      - name: 'template'
+        value: 'bordercrossing-backend'
+      - name: 'io.openshift.expose-services'
+        value: '8080:http'
+    source:
+      git:
+        uri: "${REPOSITORY}"
+        ref: "${REPOSITORY_TAG}"
+      contextDir: "${REPOSITORY_CONTEXTDIR}"
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: 'php-73:${PHP_BASE_IMAGE_VERSION}'
+          namespace: openshift
+      type: Source
+    triggers:
+    - type: ImageChange
+    - type: ConfigChange
+    - type: "GitHub"
+      github:
+        secretReference:
+          name: "github-secret"
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: github-secret
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+  data:
+    WebHookSecretKey: '${GITHUB_PATH_SECRET}'
+
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "bordercrossing-aws-config"
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+    annotations:
+      template.openshift.io/expose-aws_region: "{.data['region']}"
+      template.openshift.io/expose-aws_secret: "{.data['secret']}"
+      template.openshift.io/expose-aws_secret_key: "{.data['secretKey']}"
+  stringData:
+    secret: "${AWS_SECRET}"
+    secretKey: "${AWS_SECRET_KEY}"
+    region: "${AWS_REGION}"
+
+
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "bordercrossing-db-config"
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+    annotations:
+      template.openshift.io/expose-database_service: "{.data['service']}"
+      template.openshift.io/expose-database_name: "{.data['database']}"
+      template.openshift.io/expose-database_parameters: "{.data['parameters']}"
+      template.openshift.io/expose-database_user: "{.data['user']}"
+      template.openshift.io/expose-database_password: "{.data['password']}"
+  stringData:
+    service: "bordercrossing-db"
+    database: "${DB_NAME}"
+    parameters: "${DB_PARAMETERS}"
+    user: "${DB_USER}"
+    password: "${DB_PASSWORD}"
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: bordercrossing-db
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+  spec:
+    type: ExternalName
+    externalName: "${DB_HOST}"
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: bordercrossing-backend
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+  spec:
+    ports:
+      - name: 'backend'
+        protocol: 'TCP'
+        port: 8080
+        targetPort: 8080
+    selector:
+      app: bordercrossing
+      module: bordercrossing-backend
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: bordercrossing-backend
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+    annotations:
+      console.alpha.openshift.io/overview-app-route: 'true'
+  spec:
+    host: "${BACKEND_URL}"
+    to:
+      kind: Service
+      name: bordercrossing-backend
+      weight: 100
+    port:
+      targetPort: 'backend'
+
+- kind: DeploymentConfig
+  apiVersion: apps.openshift.io/v1
+  metadata:
+    name: bordercrossing-backend
+    labels:
+      app: bordercrossing
+      module: bordercrossing-backend
+      template: bordercrossing-backend
+  spec:
+    replicas: 3
+    revisionHistoryLimit: 3
+    selector:
+      app: bordercrossing
+      module: bordercrossing-backend
+      deploymentConfig: bordercrossing-backend
+    strategy:
+      type: Rolling
+    triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+          - backend
+          from:
+            kind: ImageStreamTag
+            name: "bordercrossing-backend:${IMAGE_TARGET_TAG}"
+    template:
+      metadata:
+        labels:
+          app: bordercrossing
+          module: bordercrossing-backend
+          deploymentConfig: bordercrossing-backend
+      spec:
+        volumes:
+        - name: 'cache'
+          emptyDir: {}
+        - name: 'logs'
+          emptyDir: {}
+        containers:
+          - name: "backend"
+            image: "bordercrossing-backend:${IMAGE_TARGET_TAG}"
+            resources:
+              requests:
+                cpu: "${BACKEND_CPU_REQUESTS}"
+                memory: "${BACKEND_MEMORY_REQUESTS}"
+              limits:
+                cpu: "${BACKEND_CPU_LIMIT}"
+                memory: "${BACKEND_MEMORY_LIMIT}"
+            ports:
+              - containerPort: 8080
+                protocol: 'TCP'
+            volumeMounts:
+              - name: 'cache'
+                mountPath: '/opt/app-root/src/var/cache'
+              - name: 'logs'
+                mountPath: '/opt/app-root/src/var/log'
+            env:
+              - name: 'APP_DBEUG'
+                value: "${APP_DEBUG}"
+              - name: 'APP_ENV'
+                value: "${APP_ENV}"
+              - name: 'BACKEND_URL'
+                value: '${BACKEND_URL}'
+              - name: 'REDIS_SERVICE'
+                value: 'redis'
+              - name: 'DB_HOST'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-db-config'
+                    key: 'service'
+              - name: 'DB_PARAMETERS'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-db-config'
+                    key: 'parameters'
+              - name: 'DB_NAME'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-db-config'
+                    key: 'database'
+              - name: 'DB_USER'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-db-config'
+                    key: 'user'
+              - name: 'DB_PASSWORD'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-db-config'
+                    key: 'password'
+              - name: 'AWS_REGION'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-aws-config'
+                    key: 'region'
+              - name: 'AWS_SECRET'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-aws-config'
+                    key: 'secret'
+              - name: 'AWS_SECRET_KEY'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-aws-config'
+                    key: 'secretKey'
