@@ -138,9 +138,9 @@ objects:
       limits:
         cpu: "2"
         memory: "2Gi"
-    completionDeadlineSeconds: 120
+    completionDeadlineSeconds: 900
     successfulBuildsHistoryLimit: 2
-    failedBuildsHistoryLimit: 5
+    failedBuildsHistoryLimit: 2
     output:
       to:
         kind: ImageStreamTag
