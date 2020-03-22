@@ -46,6 +46,8 @@ class FormController extends FOSRestController
         ['name' => 'rideto', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
         ['name' => 'date', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
 
+        ['name' => 'carregistration', 'datatype' => 'string', 'forEntity' => 'Carregistration', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+
 
         // Italy
         /*
