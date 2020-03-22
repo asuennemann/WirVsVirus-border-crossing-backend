@@ -37,10 +37,6 @@ class BorderController extends FOSRestController
         $manager = $this->getDoctrine()->getManager();
         $dataWrapper = json_decode($request->getContent(), true);
         $data = json_decode($dataWrapper['body'], true);
-        //$data = json_decode($request->getContent(), true);
-        $FIHA = fopen(__DIR__ . '/data.json', 'w+');
-        fwrite($FIHA, print_r($data, true));
-        //fclose($FIHA);
         $companyFromDb = null;
         $driverFromDb = null;
         $company = new Company();
@@ -65,8 +61,6 @@ class BorderController extends FOSRestController
                 $manager->flush();
             }
         }
-        fwrite($FIHA, 'company');
-
 
         $driver = new Driver();
         $form = $this->createForm(\App\Form\DriverType::class, $driver);
@@ -91,8 +85,6 @@ class BorderController extends FOSRestController
             $success = false;
             return $this->handleView($this->view(['success'=>$success, 'errors' => $form->getErrors()]));
         }
-        fwrite($FIHA, 'driver');
-
 
         $driverToCompany = new Driver2company();
         $driverToCompanyRepository = $manager->getRepository('App:Driver2company');
@@ -107,7 +99,6 @@ class BorderController extends FOSRestController
             $manager->persist($driverToCompany);
             $manager->flush();
         }
-        fwrite($FIHA, 'driverToCompany');
 
         $tour = new Tour();
         $nBorders = count($data[0]['Tour']);
@@ -117,7 +108,6 @@ class BorderController extends FOSRestController
         $tour->setEndDate($endDate);
         $manager->persist($tour);
         $manager->flush();
-        fwrite($FIHA, 'tour');
 
         $borderRepository = $manager->getRepository('App:Border');
         $countryRepository = $manager->getRepository('App:Country');
@@ -154,8 +144,6 @@ class BorderController extends FOSRestController
             $manager->persist($carregistration);
             $manager->flush();
         }
-        fwrite($FIHA, 'carregistration');
-
 
         $driverToTour = new Driver2tour();
         $driverToTour->setPkeyTour($tour);
@@ -163,8 +151,7 @@ class BorderController extends FOSRestController
         $driverToTour->setPkeyCarregistration($carregistration);
         $manager->persist($driverToTour);
         $manager->flush();
-        fwrite($FIHA, 'driverToTour');
-        fclose($FIHA);
+
         return $this->handleView($this->view(['success'=>$success, 'tour' => $tour->getPkey()]));
     }
 }
