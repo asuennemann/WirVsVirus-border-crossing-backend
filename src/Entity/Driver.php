@@ -26,7 +26,7 @@ class Driver
      *
      * @ORM\Column(name="borderguard", type="guid", nullable=true, options={"default"="uuid_generate_v4()"})
      */
-    private $borderguard = 'uuid_generate_v4()';
+    private $borderguard;
 
     /**
      * @var string|null
