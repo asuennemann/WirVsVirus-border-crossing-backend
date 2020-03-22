@@ -22,7 +22,7 @@ class CountryController extends FOSRestController
     public function listAction()
     {
         $manager = $this->getDoctrine()->getManager();
-        $countries = $manager->getRepository('App:Country')->findAll();
+        $countries = $manager->getRepository('App:Country')->findBy(array(), array('countryname' => 'asc'));
         return $this->handleView($this->view($countries));
     }
 }
