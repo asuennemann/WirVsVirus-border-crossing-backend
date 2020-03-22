@@ -1,0 +1,10 @@
+sensio_framework_extra:
+    router:
+        annotations: false
+
+    #view.listener:
+        #alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+
+# bugfix - https://github.com/FriendsOfSymfony/FOSRestBundle/issues/1768
+#sensio_framework_extra.view.listener:
+#    alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
