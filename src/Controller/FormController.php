@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 
+use App\Entity\Formtemplatefield;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,25 +26,25 @@ class FormController extends FOSRestController
      */
     private $formTemplateFields = array(
         // Germany
-        ['name' => 'firstname', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'lastname', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'street', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'place', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'country', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'email', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'mobile', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'passportid', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
+        ['name' => 'firstname', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'lastname', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'street', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'place', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'country', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'email', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'mobile', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'passportid', 'datatype' => 'string', 'forEntity' => 'Driver', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
 
-        ['name' => 'companyname', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'street', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'place', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'country', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'email', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'mobile', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
+        ['name' => 'companyname', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'street', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'place', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'country', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'email', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'mobile', 'datatype' => 'string', 'forEntity' => 'Company', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
 
-        ['name' => 'ridefrom', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'rideto', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
-        ['name' => 'date', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => 'be604d8a-d65c-474e-b385-020cf9252452'],
+        ['name' => 'ridefrom', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'rideto', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
+        ['name' => 'date', 'datatype' => 'string', 'forEntity' => 'Border', 'country' => '3a394930-7b13-4447-b72b-6229961d9bff'],
 
 
         // Italy

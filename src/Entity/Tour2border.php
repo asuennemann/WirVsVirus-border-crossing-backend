@@ -93,12 +93,12 @@ class Tour2border
 
     public function getTransiton(): ?\DateTimeInterface
     {
-        return $this->approvedon;
+        return $this->transiton;
     }
 
-    public function setTransiton(?\DateTimeInterface $approvedon): self
+    public function setTransiton(?\DateTimeInterface $transition): self
     {
-        $this->approvedon = $approvedon;
+        $this->transiton = $transition;
 
         return $this;
     }

@@ -35,13 +35,6 @@ class Tour
      */
     private $endDate;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="pkey_formdata", type="guid", nullable=false)
-     */
-    private $pkeyFormdata;
-
     public function getPkey(): ?string
     {
         return $this->pkey;
@@ -67,18 +60,6 @@ class Tour
     public function setEndDate(?\DateTimeInterface $endDate): self
     {
         $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    public function getPkeyFormdata(): ?string
-    {
-        return $this->pkeyFormdata;
-    }
-
-    public function setPkeyFormdata(string $pkeyFormdata): self
-    {
-        $this->pkeyFormdata = $pkeyFormdata;
 
         return $this;
     }

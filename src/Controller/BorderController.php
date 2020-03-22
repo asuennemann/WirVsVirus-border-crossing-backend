@@ -6,6 +6,7 @@ use App\Entity\Company;
 use App\Entity\Driver;
 use App\Entity\Driver2company;
 use App\Entity\Tour;
+use App\Entity\Tour2border;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,9 +34,6 @@ class BorderController extends FOSRestController
         $success = true;
         $manager = $this->getDoctrine()->getManager();
         $data = json_decode($request->getContent(), true);
-        $FIHA = fopen(__DIR__ . '/driver.txt', 'w+');
-        fwrite($FIHA, print_r($data, true));
-        fclose($FIHA);
         $driver = new Driver();
         $form = $this->createForm(\App\Form\DriverType::class, $driver);
         $form->submit($data[0]['Driver']);
@@ -109,10 +107,24 @@ class BorderController extends FOSRestController
         $endDate = new \DateTime($data[0]['Tour'][$nBorders - 1]['date']);
         $tour->setStartDate($startDate);
         $tour->setEndDate($endDate);
-        $tour->setPkeyFormdata('asdf');
         $manager->persist($tour);
         $manager->flush();
 
-        return $this->handleView($this->view(['success'=>$success, 'startDate' => $startDate, 'endDate' => $endDate]));
+        $borderRepository = $manager->getRepository('App:Border');
+        $countryRepository = $manager->getRepository('App:Country');
+        $border = new Border();
+        for($i = 0; $i < $nBorders; $i++)
+        {
+            $border = $borderRepository->findOneBy(['ridefrom' => $data[0]['Tour'][$i]['ridefrom'], 'rideto' => $data[0]['Tour'][$i]['rideto']]);
+            $tour2border = new Tour2border();
+            $tour2border->setPkeyBorder($border);
+            $tour2border->setPkeyTour($tour);
+            $transitionDate = new \DateTime($data[0]['Tour'][$i]['date']);
+            $tour2border->setTransiton($transitionDate);
+            $manager->persist($tour2border);
+            $manager->flush();
+        }
+
+        return $this->handleView($this->view(['success'=>$success, 'tour' => $tour->getPkey()]));
     }
 }
