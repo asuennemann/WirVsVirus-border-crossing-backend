@@ -2,5 +2,5 @@ aws:
     version: latest
     region: "%env(resolve:AWS_REGION)%"
     credentials:
-        key: "%env(resolve:AWS_SECRET)%"
-        secret: "%env(resolve:AWS_SECRET_KEY)%"
+        key: "%env(resolve:AWS_SKEY)%"
+        secret: "%env(resolve:AWS_SECRET)%"

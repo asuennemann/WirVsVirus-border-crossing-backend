@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\Tour" table="tour">
+    <id name="pkey" type="guid" column="pkey">
+      <generator strategy="SEQUENCE"/>
+      <sequence-generator sequence-name="tour_pkey_seq" allocation-size="1" initial-value="1"/>
+    </id>
+    <field name="startDate" type="date" column="start_date" nullable="true"/>
+    <field name="endDate" type="date" column="end_date" nullable="true"/>
+    <field name="pkeyFormdata" type="guid" column="pkey_formdata" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+  </entity>
+</doctrine-mapping>

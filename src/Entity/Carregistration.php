@@ -17,10 +17,9 @@ class Carregistration
      *
      * @ORM\Column(name="pkey", type="guid", nullable=false, options={"default"="uuid_generate_v4()"})
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="carregistration_pkey_seq", allocationSize=1, initialValue=1)
+     * @ORM\GeneratedValue(strategy="UUID")
      */
-    private $pkey = 'uuid_generate_v4()';
+    private $pkey;
 
     /**
      * @var string|null
