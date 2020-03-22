@@ -75,10 +75,10 @@ parameters:
   displayName: 'AWS Region'
   value: 'eu-central-1'
   required: true
-- name: 'AWS_SECRET'
+- name: 'AWS_KEY'
   displayName: 'AWS Secret'
   required: true
-- name: 'AWS_SECRET_KEY'
+- name: 'AWS_SECRET'
   displayName: 'AWS Secret Key'
   required: true
 - name: 'PHP_BASE_IMAGE_VERSION'
@@ -201,11 +201,11 @@ objects:
       template: bordercrossing-backend
     annotations:
       template.openshift.io/expose-aws_region: "{.data['region']}"
-      template.openshift.io/expose-aws_secret: "{.data['secret']}"
-      template.openshift.io/expose-aws_secret_key: "{.data['secretKey']}"
+      template.openshift.io/expose-AWS_KEY: "{.data['key']}"
+      template.openshift.io/expose-AWS_SECRET: "{.data['secret']}"
   stringData:
+    key: "${AWS_KEY}"
     secret: "${AWS_SECRET}"
-    secretKey: "${AWS_SECRET_KEY}"
     region: "${AWS_REGION}"
 
 
@@ -375,13 +375,13 @@ objects:
                   secretKeyRef:
                     name: 'bordercrossing-aws-config'
                     key: 'region'
+              - name: 'AWS_KEY'
+                valueFrom:
+                  secretKeyRef:
+                    name: 'bordercrossing-aws-config'
+                    key: 'key'
               - name: 'AWS_SECRET'
                 valueFrom:
                   secretKeyRef:
                     name: 'bordercrossing-aws-config'
                     key: 'secret'
-              - name: 'AWS_SECRET_KEY'
-                valueFrom:
-                  secretKeyRef:
-                    name: 'bordercrossing-aws-config'
-                    key: 'secretKey'
