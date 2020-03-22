@@ -136,8 +136,8 @@ objects:
   spec:
     resources:
       limits:
-        cpu: "250m"
-        memory: "128Mi"
+        cpu: "2"
+        memory: "2Gi"
     completionDeadlineSeconds: 120
     successfulBuildsHistoryLimit: 2
     failedBuildsHistoryLimit: 5
