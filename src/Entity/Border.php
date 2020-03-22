@@ -15,12 +15,11 @@ class Border
     /**
      * @var string
      *
-     * @ORM\Column(name="pkey", type="guid", nullable=false, options={"default"="uuid_generate_v4()"})
+     * @ORM\Column(name="pkey", type="guid", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="border_pkey_seq", allocationSize=1, initialValue=1)
+     * @ORM\GeneratedValue(strategy="UUID")
      */
-    private $pkey = 'uuid_generate_v4()';
+    private $pkey;
 
     /**
      * @var \Country
