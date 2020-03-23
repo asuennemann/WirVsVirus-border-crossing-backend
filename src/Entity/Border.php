@@ -15,7 +15,7 @@ class Border
     /**
      * @var string
      *
-     * @ORM\Column(name="pkey", type="guid", nullable=false)
+     * @ORM\Column(name="pkey", type="guid", nullable=false, options={"default"="uuid_generate_v4()"})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
      */

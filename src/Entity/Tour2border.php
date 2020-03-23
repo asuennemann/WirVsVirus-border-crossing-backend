@@ -36,6 +36,13 @@ class Tour2border
     private $approvedon;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="transiton", type="date", nullable=true)
+     */
+    private $transiton;
+
+    /**
      * @var \Tour
      *
      * @ORM\ManyToOne(targetEntity="Tour")
@@ -80,6 +87,18 @@ class Tour2border
     public function setApprovedon(?\DateTimeInterface $approvedon): self
     {
         $this->approvedon = $approvedon;
+
+        return $this;
+    }
+
+    public function getTransiton(): ?\DateTimeInterface
+    {
+        return $this->transiton;
+    }
+
+    public function setTransiton(?\DateTimeInterface $transition): self
+    {
+        $this->transiton = $transition;
 
         return $this;
     }
