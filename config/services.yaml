@@ -6,12 +6,12 @@
 parameters:
     aws_sdk.config.default:
         version: 'latest'
-        region: 'eu-west-1'
+        region: '%env(resolve:AWS_REGION)%'
 
     aws_sdk.credentials.default:
         credentials:
-            key: 'AKIAVSI6OX7Z3CO2BEP5'
-            secret: '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'
+            key: '%env(resolve:AWS_KEY)%'
+            secret: '%env(resolve:AWS_KEY_SECRET)%'
 services:
     # default configuration for services in *this* file
     _defaults:
